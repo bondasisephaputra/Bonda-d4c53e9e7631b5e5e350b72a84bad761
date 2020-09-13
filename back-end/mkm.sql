@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: 127.0.0.1
--- Generation Time: Sep 13, 2020 at 08:42 AM
+-- Generation Time: Sep 13, 2020 at 10:26 AM
 -- Server version: 5.6.21
 -- PHP Version: 5.6.3
 
@@ -28,15 +28,17 @@ SET time_zone = "+00:00";
 
 CREATE TABLE IF NOT EXISTS `users` (
   `username` varchar(100) NOT NULL,
-  `password` varchar(50) NOT NULL
+  `password` varchar(50) NOT NULL,
+  `lastlogin` text NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
 -- Dumping data for table `users`
 --
 
-INSERT INTO `users` (`username`, `password`) VALUES
-('aaaaaaaa', '3dbe00a167653a1aaee01d93e77e730e');
+INSERT INTO `users` (`username`, `password`, `lastlogin`) VALUES
+('aaaaaaaa', '3dbe00a167653a1aaee01d93e77e730e', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:79.0) Gecko/20100101 Firefox/79.0'),
+('bbbbbbbb', '810247419084c82d03809fc886fedaad', '');
 
 --
 -- Indexes for dumped tables

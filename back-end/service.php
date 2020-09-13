@@ -32,8 +32,12 @@
 		$check=mysqli_query($conn,"select * from users where username='$username' and password='$password'");
 		if (mysqli_num_rows($check)>0)
 		{
+            $lastlogin = $_SERVER['HTTP_USER_AGENT'];
+            $sql = "UPDATE `users` SET `lastlogin`='$lastlogin' WHERE username='$username'";
+		    mysqli_query($conn, $sql);
             $_SESSION['username']=$username;
             $_SESSION['logintime']=date("d/m/Y H:i:s");
+            $_SESSION['browser']=$_SERVER['HTTP_USER_AGENT'];
 			echo json_encode(array("statusCode"=>200));
 		}
 		else{
@@ -47,11 +51,19 @@
         echo json_encode(array("statusCode"=>200));
     }
     else if($_POST['type']==4){
-        if(!empty($_SESSION['username'])){
+        $username=$_SESSION['username'];
+        $lastlogin = $_SERVER['HTTP_USER_AGENT'];
+        $check=mysqli_query($conn,"select * from users where username='$username' and lastlogin='$lastlogin'");
+        if(!empty($_SESSION['username']) && mysqli_num_rows($check)>0){
             $contents = '<div>
             <p>Hai '.$_SESSION['username'].', waktu login anda '.$_SESSION['logintime'].'</p>
             </div>';
             echo json_encode(array("statusCode"=>200,"content"=>$contents));
+        }else if(!empty($_SESSION['username']) && $_SESSION['browser']!=$_SERVER['HTTP_USER_AGENT']){
+            unset($_SESSION["username"]);
+            unset($_SESSION["logintime"]);
+            unset($_SESSION["browser"]);
+            echo json_encode(array("statusCode"=>201));
         }else{
 			echo json_encode(array("statusCode"=>201));
 		}
