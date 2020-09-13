@@ -3,10 +3,11 @@
 <head>
 	<title>MKM TEST</title>
 	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
-	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
-<div style="margin: auto;width: 60%;padding-top:20px;">
+<div class="wrapper">
 	<div class="alert alert-success alert-dismissible" id="success" style="display:none;">
 	  <a href="#" class="close" data-dismiss="alert" aria-label="close">×</a>
 	</div>
@@ -68,16 +69,22 @@
             $("#home_page").show();
             $("#login_form").hide();
             $("#register_form").hide();
+            $("#success").hide();
+            $("#error").hide();
         });
         $('#login').on('click', function() {
             $("#login_form").show();
             $("#register_form").hide();
             $("#home_page").hide();
+            $("#success").hide();
+            $("#error").hide();
         });
         $('#register').on('click', function() {
             $("#register_form").show();
             $("#login_form").hide();
             $("#home_page").hide();
+            $("#success").hide();
+            $("#error").hide();
         });
         $('#butsave').on('click', function() {
             $("#butsave").attr("disabled", "disabled");
@@ -109,10 +116,12 @@
                         else if(dataResult.statusCode==201){
                             $("#error").show();
                             $('#error').html('Username ID already exists !');
+                            $("#success").hide();
                         }
                         else if(dataResult.statusCode==202){
                             $("#error").show();
                             $('#error').html('Password not valid !');
+                            $("#success").hide();
                         }
                         
                     }
@@ -142,11 +151,13 @@
                             $("#login_form").hide();
                             $("#register_form").hide();	
                             $("#success").show();
+                            $("#error").hide();
                             $('#success').html('Login successful !'); 				
                         }
                         else if(dataResult.statusCode==201){
                             $("#error").show();
                             $('#error').html('Invalid UsernameId or Password !');
+                            $("#success").hide();
                         }
                         
                     }
@@ -168,7 +179,9 @@
                     var dataResult = JSON.parse(dataResult);
                     if(dataResult.statusCode==200){
                         $('#status').html(dataResult.content);
-                        $("#logout").show();					
+                        $("#logout").show();
+                        $("#success").hide();
+                        $("#error").hide();					
                     }
                     else if(dataResult.statusCode==201){
                         $("#login_form").show();
@@ -176,6 +189,8 @@
                         $("#home_page").hide();
                         $('#status').html("");	      
                         $("#logout").hide();
+                        $("#success").hide();
+                        $("#error").hide();
                     }
                     
                 }
@@ -193,7 +208,8 @@
                     var dataResult = JSON.parse(dataResult);
                     if(dataResult.statusCode==200){
                         $("#success").show();
-                        $('#success').html('Logout Success !');
+                        $('#success').html('Logout Success !');                        
+                        $("#error").hide();
                         $("#home_page").show();
                         $("#login_form").hide();
                         $("#register_form").hide();	
