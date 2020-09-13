@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>MKM TEST</title>
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+</head>
+<body>
+<div style="margin: auto;width: 60%;padding-top:20px;">
+	<div class="alert alert-success alert-dismissible" id="success" style="display:none;">
+	  <a href="#" class="close" data-dismiss="alert" aria-label="close">×</a>
+	</div>
+	<div class="alert alert-danger alert-dismissible" id="error" style="display:none;">
+	  <a href="#" class="close" data-dismiss="alert" aria-label="close">×</a>
+    </div>
+    <button type="button" class="btn btn-success btn-sm" id="home">Home</button>
+	<button type="button" class="btn btn-danger btn-sm" id="logout" style="display:none;">Logout</button>
+	<div id="home_page">
+        <h2>Home</h2>
+        <h3 id='tanggal'></h3>
+        <h3 id='status'></h3>
+        <form id="hello_form" name="form1" method="post"></form>
+            <input type="button" name="save" class="btn btn-primary" value="Hello" id="buthello">
+        </form>
+    </div>
+    <form id="register_form" name="form1" method="post" style="display:none;">
+        <h2>Registrasi</h2>
+		<div class="form-group">
+			<label for="pwd">Username:</label>
+			<input type="text" class="form-control" id="username" placeholder="Username" name="username">
+		</div>
+		
+		<div class="form-group">
+			<label for="pwd">Password:</label>
+			<input type="password" class="form-control" id="password" placeholder="Password" name="password">
+        </div>
+        <div class="form-group">
+			<label for="pwd">Repeat Password:</label>
+			<input type="password" class="form-control" id="password2" placeholder="Repeat Password" name="password2">
+		</div>
+		<input type="button" name="save" class="btn btn-primary" value="Register" id="butsave">
+	</form>
+	<form id="login_form" name="form1" method="post" style="display:none;">
+		<h2>Login</h2>
+		<div class="form-group">
+			<label for="pwd">Username:</label>
+			<input type="text" class="form-control" id="username_log" placeholder="Username" name="username">
+		</div>
+		<div class="form-group">
+			<label for="pwd">Password:</label>
+			<input type="password" class="form-control" id="password_log" placeholder="Password" name="password">
+		</div>
+        <input type="button" name="save" class="btn btn-primary" value="Login" id="butlogin">        
+	    <button type="button" class="btn btn-success" id="register">Registrasi</button> 
+	</form>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.18.1/moment.min.js"></script>
+<script>
+    
+    $(document).ready(function() {
+        
+        var interval = setInterval(function() {
+            var momentNow = moment();
+            $('#tanggal').html(momentNow.format('DD/MM/YYYY') + " " + momentNow.format('HH:mm:ss'));
+        }, 100);
+        $('#home').on('click', function() {
+            $("#home_page").show();
+            $("#login_form").hide();
+            $("#register_form").hide();
+        });
+        $('#login').on('click', function() {
+            $("#login_form").show();
+            $("#register_form").hide();
+            $("#home_page").hide();
+        });
+        $('#register').on('click', function() {
+            $("#register_form").show();
+            $("#login_form").hide();
+            $("#home_page").hide();
+        });
+        $('#butsave').on('click', function() {
+            $("#butsave").attr("disabled", "disabled");
+            var username = $('#username').val();
+            var password = $('#password').val();
+            var password2 = $('#password2').val();
+            if(username!="" && password!="" ){
+                $.ajax({
+                    url: "../back-end/service.php",
+                    type: "POST",
+                    data: {
+                        type: 1,
+                        username: username,
+                        password: password,
+                        password2: password2					
+                    },
+                    cache: false,
+                    success: function(dataResult){
+                        var dataResult = JSON.parse(dataResult);
+                        if(dataResult.statusCode==200){
+                            $("#butsave").removeAttr("disabled");
+                            $('#register_form').find('input:text').val('');
+                            $("#success").show();
+                            $('#success').html('Registration successful !'); 	
+                            $("#login_form").show();
+                            $("#register_form").hide();
+                            $("#home_page").hide();					
+                        }
+                        else if(dataResult.statusCode==201){
+                            $("#error").show();
+                            $('#error').html('Username ID already exists !');
+                        }
+                        else if(dataResult.statusCode==202){
+                            $("#error").show();
+                            $('#error').html('Password not valid !');
+                        }
+                        
+                    }
+                });
+            }
+            else{
+                alert('Please fill all the field !');
+            }
+        });
+        $('#butlogin').on('click', function() {
+            var username = $('#username_log').val();
+            var password = $('#password_log').val();
+            if(username!="" && password!="" ){
+                $.ajax({
+                    url: "../back-end/service.php",
+                    type: "POST",
+                    data: {
+                        type:2,
+                        username: username,
+                        password: password						
+                    },
+                    cache: false,
+                    success: function(dataResult){
+                        var dataResult = JSON.parse(dataResult);
+                        if(dataResult.statusCode==200){
+                            $("#home_page").show();
+                            $("#login_form").hide();
+                            $("#register_form").hide();	
+                            $("#success").show();
+                            $('#success').html('Login successful !'); 				
+                        }
+                        else if(dataResult.statusCode==201){
+                            $("#error").show();
+                            $('#error').html('Invalid UsernameId or Password !');
+                        }
+                        
+                    }
+                });
+            }
+            else{
+                alert('Please fill all the field !');
+            }
+        });
+        $('#buthello').on('click', function() {            
+            $.ajax({
+                url: "../back-end/service.php",
+                type: "POST",
+                data: {
+                    type:4						
+                },
+                cache: false,
+                success: function(dataResult){
+                    var dataResult = JSON.parse(dataResult);
+                    if(dataResult.statusCode==200){
+                        $('#status').html(dataResult.content);
+                        $("#logout").show();					
+                    }
+                    else if(dataResult.statusCode==201){
+                        $("#login_form").show();
+                        $("#register_form").hide();
+                        $("#home_page").hide();
+                    }
+                    
+                }
+            });            
+        });
+        $('#logout').on('click', function() {
+            $.ajax({
+                url: "../back-end/service.php",
+                method: "POST",
+                data: {
+                    type:3						
+                },
+                cache: false,
+                success: function(dataResult){
+                    var dataResult = JSON.parse(dataResult);
+                    if(dataResult.statusCode==200){
+                        $("#success").show();
+                        $('#success').html('Logout Success !');
+                        $("#home_page").show();
+                        $("#login_form").hide();
+                        $("#register_form").hide();	
+                        $('#status').html("");	                        
+                        $("#logout").hide();						
+                    }
+                }
+            });
+        });
+    });
+</script>
+</body>
+</html>    
